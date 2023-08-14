@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text Editor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        textarea {
+            width: 500px;
+            height: 300px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function saveTextAsFile() {
+            var textToSave = document.getElementById("editor").value;
+            var fileName = prompt("Enter file name:");
+            var fileType = prompt("Enter file type:");
+            if (fileName !== null && fileName !== "") {
+                var blob = new Blob([textToSave], { type: "text/" + fileType });
+                saveAs(blob, fileName + "." + fileType);
+            }
+        }
+
+        function importFile() {
+            var fileInput = document.createElement("input");
+            fileInput.type = "file";
+            fileInput.accept = ".txt";
+            fileInput.addEventListener("change", function (event) {
+                var file = event.target.files[0];
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    document.getElementById("editor").value = event.target.result;
+                };
+                reader.readAsText(file);
+            });
+            fileInput.click();
+        }
+    </script>
+</head>
+<body>
+    <h1>Text Editor</h1>
+    <textarea id="editor" placeholder="Enter text"></textarea>
+    <button onclick="saveTextAsFile()">Save</button>
+    <button onclick="importFile()">Import</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</body>
+</html>

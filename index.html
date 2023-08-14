@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minecraft Server Info</title>
+    <style>
+        @font-face {
+            font-family: "Minecraft";
+            src: url("minecraft.ttf");
+        }
+
+        body {
+            font-family: "Minecraft", sans-serif;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+        }
+
+        #loading img {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #serverIcon, #playerCount {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Minecraft Server Info</h1>
+    <input type="text" id="serverIP" placeholder="Enter server IP">
+    <button id="getServerInfoButton" onclick="getServerInfo()">Get Server Info</button>
+    <div id="loading" style="width: 64px; height: 64px;">
+        <img src="loading.gif" alt="Loading..." style="width: 100%; height: 100%;">
+    </div>
+    <div id="serverIcon"></div>
+    <div id="playerCount"></div>
+    <div id="maxPlayers"></div>
+    <div id="serverMOTD"></div>
+    <div id="serverIPResult"></div>
+
+    <button id="moreToolsButton" onclick="goToTools()">More Tools</button>
+
+    <script>
+        function getServerInfo() {
+            var serverIP = $("#serverIP").val();
+            var serverIconUrl = "https://api.mcsrvstat.us/icon/" + serverIP;
+            var serverInfoUrl = "https://api.mcsrvstat.us/2/" + serverIP;
+
+            $("#loading").show();
+            $("#serverIcon").empty();
+            $("#playerCount").empty();
+            $("#maxPlayers").empty();
+            $("#serverMOTD").empty();
+            $("#serverIPResult").empty();
+
+            $.getJSON(serverInfoUrl, function(data) {
+                $("#loading").hide();
+
+                if (data.icon) {
+                    var img = new Image();
+                    img.src = serverIconUrl;
+                    $("#serverIcon").html(img);
+                }
+
+                $("#playerCount").text("Player Count: " + data.players.online);
+                $("#maxPlayers").text("Max Players: " + data.players.max);
+                $("#serverMOTD").text("Server MOTD: " + data.motd.clean);
+            }).fail(function() {
+                $("#loading").hide();
+                $("#serverIcon").html("Failed to load server info.");
+                $("#playerCount").empty();
+                $("#maxPlayers").empty();
+                $("#serverMOTD").empty();
+            });
+
+            $("#serverIPResult").text("Server IP: " + serverIP);
+        }
+
+        function goToTools() {
+            window.location.href = "tools.html";
+        }
+    </script>
+</body>
+</html>

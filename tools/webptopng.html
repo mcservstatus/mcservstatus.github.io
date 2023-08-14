@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebP to PNG Converter</title>
+    <script>
+        function convertToPng() {
+            var webpImage = document.getElementById("webpImage").files[0];
+            var reader = new FileReader();
+            reader.readAsDataURL(webpImage);
+            reader.onload = function (event) {
+                var img = new Image();
+                img.src = event.target.result;
+                img.onload = function () {
+                    var canvas = document.createElement("canvas");
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0);
+                    var pngDataUrl = canvas.toDataURL("image/png");
+                    var downloadLink = document.createElement("a");
+                    downloadLink.href = pngDataUrl;
+                    downloadLink.download = "converted.png";
+                    downloadLink.click();
+                };
+            };
+        }
+    </script>
+</head>
+<body>
+    <h1>WebP to PNG Converter</h1>
+    <input type="file" id="webpImage" accept="image/webp">
+    <button onclick="convertToPng()">Convert to PNG</button>
+</body>
+</html>
